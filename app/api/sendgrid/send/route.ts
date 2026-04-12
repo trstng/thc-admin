@@ -11,6 +11,7 @@ export async function POST(req: Request) {
       jobDate?: string;
       jobTime?: string;
       address?: string;
+      quote?: string;
       clientRecordId?: string;
       jobRecordId?: string;
     };
@@ -26,6 +27,7 @@ export async function POST(req: Request) {
       jobDate: body.jobDate,
       jobTime: body.jobTime,
       address: body.address,
+      quote: body.quote,
     });
 
     // Log to Automations Log

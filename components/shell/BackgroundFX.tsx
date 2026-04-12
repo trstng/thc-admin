@@ -41,16 +41,16 @@ export default function BackgroundFX() {
 
   return (
     <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-      <div className="absolute inset-0 bg-[linear-gradient(180deg,#fff5f5_0%,#f7f8fa_40%,#eef0f3_100%)]" />
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,#fff5f8_0%,#f7f8fa_40%,#eef0f3_100%)]" />
       <div
         ref={a}
         className="absolute top-[-10%] right-[-10%] w-[520px] h-[520px] rounded-full blur-[100px] opacity-50"
-        style={{ background: "radial-gradient(circle, #ffa8a8 0%, transparent 60%)" }}
+        style={{ background: "radial-gradient(circle, #f9a8c5 0%, transparent 60%)" }}
       />
       <div
         ref={b}
         className="absolute bottom-[-15%] left-[-5%] w-[560px] h-[560px] rounded-full blur-[120px] opacity-40"
-        style={{ background: "radial-gradient(circle, #ffc9c9 0%, transparent 60%)" }}
+        style={{ background: "radial-gradient(circle, #fbcfe0 0%, transparent 60%)" }}
       />
     </div>
   );

@@ -58,6 +58,7 @@ export function formatDate(d: string | Date | undefined | null) {
     month: "short",
     day: "numeric",
     year: "numeric",
+    timeZone: "America/Chicago",
   }).format(date);
 }
 
@@ -67,6 +68,7 @@ export function formatTime(d: string | Date | undefined | null) {
   return new Intl.DateTimeFormat("en-US", {
     hour: "numeric",
     minute: "2-digit",
+    timeZone: "America/Chicago",
   }).format(date);
 }
 

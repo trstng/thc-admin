@@ -44,7 +44,7 @@ export default function FinancialBreakdown({ gross }: { gross: number }) {
     {
       label: "= Net take-home",
       value: net,
-      color: "#e03131",
+      color: "var(--brand-700)",
       width: (net / max) * 100,
     },
   ];

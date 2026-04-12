@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<title>Cleaning Appointment Reminder</title>
+
+<style>
+
+body, table, td, a {
+  -webkit-text-size-adjust:100%;
+  -ms-text-size-adjust:100%;
+}
+
+table, td {
+  mso-table-lspace:0pt;
+  mso-table-rspace:0pt;
+}
+
+img {
+  -ms-interpolation-mode:bicubic;
+  border:0;
+  outline:none;
+  text-decoration:none;
+  display:block;
+}
+
+table {
+  border-collapse:collapse !important;
+}
+
+body {
+  margin:0 !important;
+  padding:0 !important;
+  width:100% !important;
+  height:100% !important;
+  background-color:#fdf7fa;
+  font-family: Arial, Helvetica, sans-serif;
+  color:#5c4a52;
+}
+
+.email-wrapper{
+  width:100%;
+  background: repeating-linear-gradient(
+    to right,
+    #f8dfe7 0px,
+    #f8dfe7 60px,
+    #fffafb 60px,
+    #fffafb 120px
+  );
+  padding:30px 15px;
+}
+
+.container{
+  max-width:620px;
+  margin:0 auto;
+  background-color:rgba(255,255,255,0.94);
+  border-radius:20px;
+  overflow:hidden;
+  box-shadow:0 6px 24px rgba(214,128,156,0.12);
+}
+
+.inner{
+  padding:36px 32px;
+}
+
+.logo{
+  margin:0 auto 20px auto;
+  width:130px;
+  max-width:130px;
+  height:auto;
+}
+
+.title{
+  font-size:30px;
+  line-height:38px;
+  font-weight:bold;
+  color:#e56f98;
+  text-align:center;
+  margin:0 0 10px 0;
+}
+
+.subtitle{
+  font-size:16px;
+  line-height:24px;
+  color:#7a6570;
+  text-align:center;
+  margin:0 0 28px 0;
+}
+
+.greeting{
+  font-size:18px;
+  line-height:28px;
+  color:#5c4a52;
+  margin:0 0 18px 0;
+}
+
+.content{
+  font-size:15px;
+  line-height:24px;
+  color:#5c4a52;
+  margin:0 0 24px 0;
+}
+
+.details-box{
+  background-color:#fff7fa;
+  border:1px solid #f3c7d6;
+  border-radius:16px;
+  padding:22px;
+  margin:0 0 28px 0;
+}
+
+.section-title{
+  font-size:18px;
+  line-height:26px;
+  font-weight:bold;
+  color:#dd6d93;
+  margin:0 0 14px 0;
+}
+
+.detail-row{
+  padding:10px 0;
+  border-bottom:1px solid #f5dbe4;
+}
+
+.detail-row:last-child{
+  border-bottom:none;
+}
+
+.detail-label{
+  font-size:13px;
+  line-height:20px;
+  font-weight:bold;
+  color:#b96a87;
+  text-transform:uppercase;
+  letter-spacing:0.5px;
+  margin:0 0 4px 0;
+}
+
+.detail-value{
+  font-size:16px;
+  line-height:24px;
+  color:#5c4a52;
+  margin:0;
+}
+
+.checklist-box{
+  background-color:#fffafd;
+  border:1px solid #f3d7e2;
+  border-radius:16px;
+  padding:22px;
+  margin:0 0 24px 0;
+}
+
+.checklist{
+  margin:0;
+  padding-left:20px;
+  color:#5c4a52;
+}
+
+.checklist li{
+  font-size:15px;
+  line-height:24px;
+  margin-bottom:10px;
+}
+
+.footer{
+  font-size:13px;
+  line-height:20px;
+  color:#8a7880;
+  text-align:center;
+  padding:0 32px 32px 32px;
+}
+
+.highlight{
+  color:#dd6d93;
+  font-weight:bold;
+}
+
+@media screen and (max-width:620px){
+
+.inner{
+padding:28px 20px;
+}
+
+.footer{
+padding:0 20px 28px 20px;
+}
+
+.title{
+font-size:26px;
+line-height:34px;
+}
+
+.logo{
+width:110px;
+max-width:110px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+<tr>
+<td class="email-wrapper" align="center">
+
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" class="container">
+
+<tr>
+<td class="inner">
+
+<img
+src="https://vtxz5y44w6e4isy6.public.blob.vercel-storage.com/PNG%20image.png"
+alt="Tidy Home Co."
+class="logo"
+/>
+
+<h1 class="title">Cleaning Appointment Reminder</h1>
+
+<p class="subtitle">
+Just a quick reminder about your upcoming cleaning.
+</p>
+
+<p class="greeting">Hi {{customer_name}},</p>
+
+<p class="content">
+This is a friendly reminder that your upcoming cleaning with
+<span class="highlight">Tidy Home Co.</span> is scheduled soon.
+Please review the details below and make sure everything is ready for our team.
+</p>
+
+<div class="details-box">
+
+<p class="section-title">Appointment Details</p>
+
+<div class="detail-row">
+<p class="detail-label">Service Address</p>
+<p class="detail-value">{{address}}</p>
+</div>
+
+<div class="detail-row">
+<p class="detail-label">Date</p>
+<p class="detail-value">{{job_date}}</p>
+</div>
+
+<div class="detail-row">
+<p class="detail-label">Time</p>
+<p class="detail-value">{{job_time}}</p>
+</div>
+
+<div class="detail-row">
+<p class="detail-label">Quoted Price</p>
+<p class="detail-value">{{quote}}</p>
+</div>
+
+</div>
+
+<div class="checklist-box">
+
+<p class="section-title">A Few Things to Prepare Before We Arrive</p>
+
+<ul class="checklist">
+<li>Please place dogs or pets in a secure area if necessary.</li>
+<li>Move heavy clutter, clothing, toys, or loose items from floors and surfaces.</li>
+<li>Please ensure the kitchen sink is cleared out unless dishes were selected as an add-on.</li>
+<li>Please provide access instructions (codes, keys, entry notes, etc.).</li>
+<li>Secure fragile or delicate items you prefer we do not move.</li>
+<li>Notify us ahead of time of any special requests or priority areas.</li>
+<li>For safety reasons, we do not clean biohazardous materials.</li>
+</ul>
+
+</div>
+
+<p class="content" style="margin-bottom:0;">
+We appreciate the opportunity to care for your home and look forward to making it shine.
+</p>
+
+</td>
+</tr>
+
+<tr>
+<td class="footer">
+Tidy Home Co.<br>
+Please reply to this email if you need to update your appointment.
+</td>
+</tr>
+
+</table>
+
+</td>
+</tr>
+</table>
+
+</body>
+</html>

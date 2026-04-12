@@ -105,23 +105,23 @@ function LoginInner() {
   return (
     <div className="relative min-h-screen overflow-hidden flex items-center justify-center px-4 py-10">
       {/* Ambient gradient */}
-      <div className="absolute inset-0 -z-20 bg-[linear-gradient(180deg,#fff5f5_0%,#f7f8fa_60%,#eef0f3_100%)]" />
+      <div className="absolute inset-0 -z-20 bg-[linear-gradient(180deg,#fff5f8_0%,#f7f8fa_60%,#eef0f3_100%)]" />
       {/* Orbs */}
       <div
         ref={orbARef}
         className="absolute -z-10 top-[-10%] left-[-5%] w-[420px] h-[420px] rounded-full blur-3xl opacity-60"
-        style={{ background: "radial-gradient(circle, #ffa8a8 0%, transparent 60%)" }}
+        style={{ background: "radial-gradient(circle, #f9a8c5 0%, transparent 60%)" }}
       />
       <div
         ref={orbBRef}
         className="absolute -z-10 bottom-[-15%] right-[-10%] w-[520px] h-[520px] rounded-full blur-3xl opacity-50"
-        style={{ background: "radial-gradient(circle, #ff8787 0%, transparent 60%)" }}
+        style={{ background: "radial-gradient(circle, #f48ab2 0%, transparent 60%)" }}
       />
 
       <div className="w-full max-w-md">
         <div ref={wordmarkRef} className="text-center mb-8">
           <div className="inline-flex items-center gap-2 mb-3">
-            <div className="w-9 h-9 rounded-2xl bg-gradient-to-br from-[var(--brand-400)] to-[var(--brand-600)] shadow-lg shadow-[#fa5252]/30 flex items-center justify-center text-white font-bold">
+            <div className="w-9 h-9 rounded-2xl bg-gradient-to-br from-[var(--brand-400)] to-[var(--brand-600)] shadow-lg shadow-[#ec6e9b]/30 flex items-center justify-center text-white font-bold">
               T
             </div>
             <div className="font-semibold text-lg tracking-tight text-ink-900">

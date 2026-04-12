@@ -48,8 +48,8 @@ export default function RevenueChart({
           <ComposedChart data={withNet} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
             <defs>
               <linearGradient id="grossGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#ff8787" stopOpacity={1} />
-                <stop offset="100%" stopColor="#fa5252" stopOpacity={0.7} />
+                <stop offset="0%" stopColor="#f48ab2" stopOpacity={1} />
+                <stop offset="100%" stopColor="#ec6e9b" stopOpacity={0.7} />
               </linearGradient>
             </defs>
             <CartesianGrid vertical={false} stroke="rgba(15,23,42,0.06)" />

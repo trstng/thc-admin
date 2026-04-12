@@ -2,17 +2,17 @@
 
 /* Tidy Home Co. — Apple-esque design tokens */
 :root {
-  /* Brand — peachy pink */
-  --brand-50: #fff5f5;
-  --brand-100: #ffe3e3;
-  --brand-200: #ffc9c9;
-  --brand-300: #ffa8a8;
-  --brand-400: #ff8787;
-  --brand-500: #fa5252;
-  --brand-600: #e03131;
-  --brand-700: #c92a2a;
-  --brand-800: #a51111;
-  --brand-900: #7a0d0d;
+  /* Brand — soft pastel pink */
+  --brand-50: #fff5f8;
+  --brand-100: #ffe4ed;
+  --brand-200: #fbcfe0;
+  --brand-300: #f9a8c5;
+  --brand-400: #f48ab2;
+  --brand-500: #ec6e9b;
+  --brand-600: #d94f83;
+  --brand-700: #b8366a;
+  --brand-800: #8e2552;
+  --brand-900: #6b1b3e;
 
   /* Neutral (Apple-esque cool grays) */
   --ink-0: #ffffff;
@@ -165,12 +165,12 @@ body {
   color: white;
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.2) inset,
-    0 4px 16px -4px rgba(250, 82, 82, 0.5);
+    0 4px 16px -4px rgba(236, 110, 155, 0.5);
 }
 .btn-primary:hover {
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.2) inset,
-    0 6px 24px -4px rgba(250, 82, 82, 0.6);
+    0 6px 24px -4px rgba(236, 110, 155, 0.6);
 }
 
 .btn-secondary {
@@ -207,7 +207,7 @@ body {
 }
 .input:focus {
   border-color: var(--brand-400);
-  box-shadow: 0 0 0 3px rgba(255, 135, 135, 0.25);
+  box-shadow: 0 0 0 3px rgba(244, 138, 178, 0.25);
 }
 .input::placeholder {
   color: var(--ink-400);
@@ -241,7 +241,7 @@ body {
 .fc {
   font-family: var(--font-sans);
   --fc-border-color: var(--border);
-  --fc-today-bg-color: rgba(255, 135, 135, 0.12);
+  --fc-today-bg-color: rgba(244, 138, 178, 0.14);
   --fc-event-border-color: transparent;
   --fc-page-bg-color: transparent;
   --fc-neutral-bg-color: transparent;

@@ -34,7 +34,7 @@ export default function PageHeader({
         {eyebrow && (
           <div
             data-hero-item
-            className="text-[11px] uppercase tracking-[0.12em] text-[var(--brand-600)] font-semibold mb-1.5"
+            className="text-[11px] uppercase tracking-[0.12em] text-[var(--brand-800)] font-semibold mb-1.5"
           >
             {eyebrow}
           </div>

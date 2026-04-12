@@ -113,8 +113,11 @@ export default function CalendarPage() {
           template: "upcoming_reminder",
           clientName: selectedClient.fields["Full Name"] || "Valued Customer",
           jobDate: formatDate(selected.fields["Job Date"]),
-          jobTime: selected.fields["Job Time"],
+          jobTime: formatTime(selected.fields["Job Time"]),
           address: selectedClient.fields.Address,
+          quote: selected.fields["Quoted Price"]
+            ? formatCurrency(Number(selected.fields["Quoted Price"]))
+            : undefined,
           clientRecordId: selectedClient.id,
           jobRecordId: selected.id,
         }),
@@ -239,6 +242,7 @@ export default function CalendarPage() {
             center: "title",
             right: "dayGridMonth,timeGridWeek,timeGridDay",
           }}
+          timeZone="America/Chicago"
           height="auto"
           events={events}
           eventClick={onEventClick}

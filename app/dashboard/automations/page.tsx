@@ -17,7 +17,7 @@ import PageHeader from "@/components/shell/PageHeader";
 import Combobox from "@/components/ui/Combobox";
 import Modal from "@/components/ui/Modal";
 import { useFetch } from "@/lib/hooks";
-import { formatCurrency, formatDate, parseAirtableDate } from "@/lib/utils";
+import { formatCurrency, formatDate, formatTime, parseAirtableDate } from "@/lib/utils";
 import type {
   AirtableRecord,
   ClientFields,
@@ -122,8 +122,13 @@ export default function AutomationsPage() {
           jobDate: upcomingJob?.fields["Job Date"]
             ? formatDate(upcomingJob.fields["Job Date"])
             : undefined,
-          jobTime: upcomingJob?.fields["Job Time"],
+          jobTime: upcomingJob?.fields["Job Time"]
+            ? formatTime(upcomingJob.fields["Job Time"])
+            : undefined,
           address: client.fields.Address,
+          quote: upcomingJob?.fields["Quoted Price"]
+            ? formatCurrency(Number(upcomingJob.fields["Quoted Price"]))
+            : undefined,
           clientRecordId: client.id,
           jobRecordId: upcomingJob?.id,
         }),
@@ -218,7 +223,7 @@ export default function AutomationsPage() {
           {/* Client summary */}
           <div className="card p-5 lg:col-span-1">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[var(--brand-400)] to-[var(--brand-600)] text-white flex items-center justify-center text-lg font-semibold shadow-lg shadow-[#fa5252]/20">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[var(--brand-400)] to-[var(--brand-600)] text-white flex items-center justify-center text-lg font-semibold shadow-lg shadow-[#ec6e9b]/20">
                 {(client.fields["Full Name"] || "?")[0]}
               </div>
               <div>

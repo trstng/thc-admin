@@ -149,7 +149,7 @@ export default function Sidebar({ username }: { username: string }) {
       {/* Desktop sidebar */}
       <aside className="hidden md:flex flex-col w-60 shrink-0 fixed left-4 top-4 bottom-4 glass-dark rounded-[22px] p-5 text-white">
         <div className="flex items-center gap-2 px-1 pb-6 mb-2 border-b border-white/10">
-          <div className="w-9 h-9 rounded-2xl bg-gradient-to-br from-[var(--brand-400)] to-[var(--brand-600)] flex items-center justify-center font-bold shadow-lg shadow-[#fa5252]/30">
+          <div className="w-9 h-9 rounded-2xl bg-gradient-to-br from-[var(--brand-400)] to-[var(--brand-600)] flex items-center justify-center font-bold shadow-lg shadow-[#ec6e9b]/30">
             T
           </div>
           <div>
