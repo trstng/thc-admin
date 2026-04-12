@@ -242,7 +242,7 @@ export default function CalendarPage() {
             center: "title",
             right: "dayGridMonth,timeGridWeek,timeGridDay",
           }}
-          timeZone="America/Chicago"
+          timeZone="UTC"
           height="auto"
           events={events}
           eventClick={onEventClick}
