@@ -2,7 +2,7 @@ import sgMail from "@sendgrid/mail";
 
 const FROM_EMAIL = process.env.SENDGRID_FROM_EMAIL || "team@tidyhomecompany.com";
 const FROM_NAME = process.env.SENDGRID_FROM_NAME || "Tidy Home Co.";
-const REVIEW_URL = "https://g.page/TidyHomeCompany/review";
+const REVIEW_URL = "https://g.page/r/CTgFJRq3M-f-EBM/review";
 const LOGO_URL =
   "https://vtxz5y44w6e4isy6.public.blob.vercel-storage.com/PNG%20image.png";
 
