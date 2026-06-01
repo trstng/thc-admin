@@ -109,6 +109,7 @@ body {
   background-clip: content-box;
 }
 
+@layer components {
 /* Frosted glass — apple style */
 .glass {
   background: var(--surface-elev);
@@ -236,6 +237,7 @@ body {
 .fade-up {
   animation: fadeUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
+} /* end @layer components */
 
 /* FullCalendar overrides for apple look */
 .fc {
