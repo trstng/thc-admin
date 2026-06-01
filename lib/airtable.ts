@@ -184,6 +184,7 @@ export type JobFields = {
   "Interior Cabinets"?: boolean;
   "Post Construction"?: boolean;
   "Promo Code"?: string;
+  "Employee Notes"?: string;
 };
 
 export type PaymentFields = {

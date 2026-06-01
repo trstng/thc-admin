@@ -9,9 +9,10 @@ import type { EventClickArg } from "@fullcalendar/core";
 import Modal from "@/components/ui/Modal";
 import { useFetch } from "@/lib/hooks";
 import { formatDate, formatTime, parseAirtableDate } from "@/lib/utils";
-import type { AirtableRecord, JobFields } from "@/lib/airtable";
+import type { AirtableRecord, ClientFields, JobFields } from "@/lib/airtable";
 
 type JobsResp = { data: AirtableRecord<JobFields>[] };
+type ClientsResp = { data: AirtableRecord<ClientFields>[] };
 
 const STATUS_COLORS: Record<string, string> = {
   Scheduled: "#3b82f6",
@@ -22,7 +23,15 @@ const STATUS_COLORS: Record<string, string> = {
 
 export default function PortalCalendar({ employeeName }: { employeeName: string }) {
   const { data: jobsResp, loading } = useFetch<JobsResp>("/api/airtable/jobs");
+  const { data: clientsResp } = useFetch<ClientsResp>("/api/airtable/clients");
   const jobs = jobsResp?.data || [];
+  const clients = clientsResp?.data || [];
+
+  const clientMap = useMemo(() => {
+    const m = new Map<string, AirtableRecord<ClientFields>>();
+    for (const c of clients) m.set(c.id, c);
+    return m;
+  }, [clients]);
 
   const [selected, setSelected] = useState<AirtableRecord<JobFields> | null>(null);
 
@@ -36,17 +45,18 @@ export default function PortalCalendar({ employeeName }: { employeeName: string 
         return !!(j.fields["Job Date"] || j.fields["Job Time"]);
       })
       .map((j) => {
-        const address =
-          (Array.isArray(j.fields["Client Address"])
-            ? j.fields["Client Address"][0]
-            : j.fields["Client Address"]) || "Address TBD";
+        const clientId = (j.fields["Linked Client"] || [])[0];
+        const clientName = clientId
+          ? (clientMap.get(clientId)?.fields["Full Name"] || "Client")
+          : "Client";
+        const serviceType = j.fields["Service Type"] || "";
         const status = j.fields["Job Status"] || "Scheduled";
         const jobDateParsed = parseAirtableDate(j.fields["Job Date"]);
         const isPast =
           !!jobDateParsed && jobDateParsed.getTime() < Date.now() - 86400000;
         return {
           id: j.id,
-          title: address,
+          title: serviceType ? `${clientName} — ${serviceType}` : clientName,
           start: j.fields["Job Time"] || j.fields["Job Date"],
           end: j.fields["Job End Time"] || undefined,
           backgroundColor: STATUS_COLORS[status] || "#64748b",
@@ -56,7 +66,7 @@ export default function PortalCalendar({ employeeName }: { employeeName: string 
           classNames: isPast ? ["opacity-70"] : [],
         };
       });
-  }, [jobs, employeeName]);
+  }, [jobs, clients, clientMap, employeeName]);
 
   function onEventClick(arg: EventClickArg) {
     const rec = (arg.event.extendedProps as { record: AirtableRecord<JobFields> }).record;
@@ -109,6 +119,9 @@ export default function PortalCalendar({ employeeName }: { employeeName: string 
             </Row>
             <Row label="Address">{selectedAddress}</Row>
             <Row label="Status">{selected.fields["Job Status"] || "Scheduled"}</Row>
+            {selected.fields["Employee Notes"] && (
+              <Row label="Notes">{selected.fields["Employee Notes"]}</Row>
+            )}
           </div>
         )}
       </Modal>
