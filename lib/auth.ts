@@ -8,10 +8,17 @@ function getSecret(): Uint8Array {
   return new TextEncoder().encode(raw);
 }
 
-export type Session = { username: string; role: "admin" };
+export type Session =
+  | { username: string; role: "admin"; employeeName?: undefined }
+  | { username: string; role: "employee"; employeeName: string };
 
 export async function signSession(session: Session): Promise<string> {
-  return new SignJWT({ username: session.username, role: session.role })
+  const payload: Record<string, unknown> = {
+    username: session.username,
+    role: session.role,
+  };
+  if (session.role === "employee") payload.employeeName = session.employeeName;
+  return new SignJWT(payload)
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime("7d")
@@ -23,6 +30,9 @@ export async function verifySession(token: string | undefined): Promise<Session 
   try {
     const { payload } = await jwtVerify(token, getSecret());
     if (typeof payload.username !== "string") return null;
+    if (payload.role === "employee" && typeof payload.employeeName === "string") {
+      return { username: payload.username, role: "employee", employeeName: payload.employeeName };
+    }
     return { username: payload.username, role: "admin" };
   } catch {
     return null;

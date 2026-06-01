@@ -92,8 +92,10 @@ function LoginInner() {
         );
         return;
       }
+      const data = await res.json();
       toast.success("Welcome back");
-      router.push(next);
+      const redirect = data.role === "employee" ? "/portal/calendar" : next;
+      router.push(redirect);
       router.refresh();
     } catch {
       setError("Something went wrong");
