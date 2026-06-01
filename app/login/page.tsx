@@ -170,7 +170,7 @@ function LoginInner() {
             <button
               type="submit"
               disabled={loading}
-              className="btn btn-primary w-full h-11 mt-2 field-row"
+              className="btn btn-primary w-full h-11 mt-2"
             >
               {loading ? "Signing in…" : "Sign in"}
             </button>
