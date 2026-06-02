@@ -1,6 +1,8 @@
 import asyncio
 import logging
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
+
+import pytz
 
 from services.airtable import TABLES, get_records
 from services.automation_log import log as alog
@@ -8,6 +10,14 @@ from services.sendgrid import send_email
 from services.twilio_sms import send_sms, build_sms
 
 logger = logging.getLogger(__name__)
+
+_CDT = pytz.timezone("America/Chicago")
+
+
+def _lookup(value) -> str:
+    if isinstance(value, list):
+        return value[0] if value else ""
+    return value or ""
 
 
 async def run_post_job_followup() -> None:
@@ -22,6 +32,8 @@ async def run_post_job_followup() -> None:
     except Exception:
         logger.exception("post_job: failed to fetch jobs")
         return
+
+    logger.info("post_job: found %d job(s) for %s", len(jobs), yesterday)
 
     for job in jobs:
         f = job.get("fields", {})
@@ -40,17 +52,20 @@ async def run_post_job_followup() -> None:
             logger.exception("post_job: log check failed for job %s", job_id)
             continue
 
-        client_name = (f.get("Client Name (from Linked Client)") or [""])[0] if isinstance(f.get("Client Name (from Linked Client)"), list) else f.get("Client Name (from Linked Client)", "")
-        client_email_raw = f.get("Client Email (from Linked Client)")
-        client_email = (client_email_raw[0] if isinstance(client_email_raw, list) else client_email_raw) or ""
+        linked_clients = f.get("Linked Client", [])
+        client_name = linked_clients[0].get("name", "") if linked_clients else ""
+        client_record_id = linked_clients[0].get("id") if linked_clients else None
+
+        client_email = _lookup(f.get("Client Email"))
         client_phone = f.get("Client Phone", "")
-        client_record_ids: list[str] = f.get("Linked Client", [])
-        client_record_id = client_record_ids[0] if client_record_ids else None
+
+        logger.info("post_job: job %s | client=%s | email=%s", job_id, client_name, client_email)
 
         if not client_email:
             logger.warning("post_job: no email for job %s — skipping emails", job_id)
         else:
             for template in ("cleaning_complete", "review_request"):
+                automation_type = "Post-Job Follow-Up" if template == "cleaning_complete" else "Review Request"
                 try:
                     send_email(
                         to=client_email,
@@ -60,7 +75,7 @@ async def run_post_job_followup() -> None:
                     await alog(
                         client_name=client_name,
                         job_id=job_id,
-                        automation_type="Post-Job Follow-Up" if template == "cleaning_complete" else "Review Request",
+                        automation_type=automation_type,
                         channel="Email",
                         status="Sent",
                         client_record_id=client_record_id,
@@ -71,7 +86,7 @@ async def run_post_job_followup() -> None:
                     await alog(
                         client_name=client_name,
                         job_id=job_id,
-                        automation_type="Post-Job Follow-Up" if template == "cleaning_complete" else "Review Request",
+                        automation_type=automation_type,
                         channel="Email",
                         status="Failed",
                         client_record_id=client_record_id,

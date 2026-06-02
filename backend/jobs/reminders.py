@@ -1,6 +1,8 @@
 import asyncio
 import logging
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
+
+import pytz
 
 from services.airtable import TABLES, get_records
 from services.automation_log import log as alog
@@ -8,6 +10,24 @@ from services.sendgrid import send_email
 from services.twilio_sms import send_sms, build_sms
 
 logger = logging.getLogger(__name__)
+
+_CDT = pytz.timezone("America/Chicago")
+
+
+def _fmt_time(iso: str) -> str:
+    if not iso:
+        return ""
+    try:
+        dt = datetime.fromisoformat(iso.replace("Z", "+00:00")).astimezone(_CDT)
+        return dt.strftime("%-I:%M %p")
+    except Exception:
+        return iso
+
+
+def _lookup(value) -> str:
+    if isinstance(value, list):
+        return value[0] if value else ""
+    return value or ""
 
 
 async def run_reminder_job() -> None:
@@ -22,6 +42,8 @@ async def run_reminder_job() -> None:
     except Exception:
         logger.exception("reminders: failed to fetch jobs")
         return
+
+    logger.info("reminders: found %d job(s) for %s", len(jobs), tomorrow)
 
     for job in jobs:
         f = job.get("fields", {})
@@ -40,15 +62,17 @@ async def run_reminder_job() -> None:
             logger.exception("reminders: log check failed for job %s", job_id)
             continue
 
-        client_name = (f.get("Client Name (from Linked Client)") or [""])[0] if isinstance(f.get("Client Name (from Linked Client)"), list) else f.get("Client Name (from Linked Client)", "")
-        client_email_raw = f.get("Client Email (from Linked Client)")
-        client_email = (client_email_raw[0] if isinstance(client_email_raw, list) else client_email_raw) or ""
+        linked_clients = f.get("Linked Client", [])
+        client_name = linked_clients[0].get("name", "") if linked_clients else ""
+        client_record_id = linked_clients[0].get("id") if linked_clients else None
+
+        client_email = _lookup(f.get("Client Email"))
         client_phone = f.get("Client Phone", "")
         job_date = f.get("Job Date", "")
-        job_time = f.get("Start Time", "")
-        address = f.get("Service Address", "")
-        client_record_ids: list[str] = f.get("Linked Client", [])
-        client_record_id = client_record_ids[0] if client_record_ids else None
+        job_time = _fmt_time(f.get("Job Time", ""))
+        address = _lookup(f.get("Client Address"))
+
+        logger.info("reminders: job %s | client=%s | email=%s | time=%s", job_id, client_name, client_email, job_time)
 
         if not client_email:
             logger.warning("reminders: no email for job %s — skipping email", job_id)
