@@ -1,6 +1,6 @@
 import asyncio
 import logging
-from datetime import date
+from datetime import date, timedelta
 
 from services.airtable import TABLES, get_records
 from services.automation_log import log as alog
@@ -11,13 +11,13 @@ logger = logging.getLogger(__name__)
 
 
 async def run_post_job_followup() -> None:
-    today = date.today().isoformat()
-    logger.info("post_job: running for %s", today)
+    yesterday = (date.today() - timedelta(days=1)).isoformat()
+    logger.info("post_job: running for %s (yesterday's completed jobs)", yesterday)
 
     try:
         jobs = await get_records(
             TABLES["JOBS"],
-            filter_formula=f"AND({{Job Date}}='{today}',{{Job Status}}='Completed')",
+            filter_formula=f"AND({{Job Date}}='{yesterday}',{{Job Status}}='Completed')",
         )
     except Exception:
         logger.exception("post_job: failed to fetch jobs")

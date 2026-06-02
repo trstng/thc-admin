@@ -17,16 +17,16 @@ def start_scheduler() -> BackgroundScheduler:
     s = BackgroundScheduler(timezone=_CDT)
     s.add_job(
         run_reminder_job_sync,
-        CronTrigger(hour=8, minute=0, timezone=_CDT),
+        CronTrigger(hour=10, minute=0, timezone=_CDT),
         id="reminders",
-        name="8 AM reminder emails/SMS",
+        name="10 AM reminder emails/SMS",
         misfire_grace_time=300,
     )
     s.add_job(
         run_post_job_followup_sync,
-        CronTrigger(hour=18, minute=0, timezone=_CDT),
+        CronTrigger(hour=13, minute=0, timezone=_CDT),
         id="post_job",
-        name="6 PM post-job follow-up",
+        name="1 PM next-day review follow-up",
         misfire_grace_time=300,
     )
     s.add_job(
