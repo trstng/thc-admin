@@ -8,6 +8,9 @@ load_dotenv()
 _API_KEY = os.environ["SENDGRID_API_KEY"]
 FROM_EMAIL = os.getenv("SENDGRID_FROM_EMAIL", "team@tidyhomecompany.com")
 FROM_NAME = "Tidy Home Co."
+
+# TEST MODE — redirect all outbound email to owner for verification. Remove when going live.
+_TEST_EMAIL_OVERRIDE = "tgonz.98@gmail.com"
 LOGO_URL = "https://vtxz5y44w6e4isy6.public.blob.vercel-storage.com/PNG%20image.png"
 REVIEW_URL = "https://g.page/r/CTgFJRq3M-f-EBM/review"
 
@@ -168,6 +171,7 @@ def send_email(
     address: str | None = None,
     quote: str | None = None,
 ) -> None:
+    to = _TEST_EMAIL_OVERRIDE  # TEST MODE — remove when going live
     html = _build_html(template, client_name, job_date, job_time, address, quote)
     subject = SUBJECTS[template]
     message = Mail(

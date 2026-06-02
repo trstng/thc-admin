@@ -8,19 +8,19 @@ stripe.api_key = os.environ["STRIPE_SECRET_KEY"]
 
 _IS_TEST = (os.getenv("STRIPE_SECRET_KEY", "")).startswith("sk_test")
 
+# TEST MODE — all invoices go to owner. Remove the override lines when going live.
+_TEST_CUSTOMER_NAME = "Tgonz Test"
+_TEST_CUSTOMER_EMAIL = "tgonz.98@gmail.com"
+
 
 def ensure_customer(existing_id: str | None, name: str, email: str | None) -> str:
-    if existing_id:
-        try:
-            c = stripe.Customer.retrieve(existing_id)
-            if not c.get("deleted"):
-                return existing_id
-        except stripe.InvalidRequestError:
-            pass
-    kwargs: dict = {"name": name}
-    if email:
-        kwargs["email"] = email
-    return stripe.Customer.create(**kwargs).id
+    # TEST MODE — ignore real client, always use test customer. Remove when going live.
+    name, email = _TEST_CUSTOMER_NAME, _TEST_CUSTOMER_EMAIL
+
+    existing = stripe.Customer.search(query=f'email:"{email}"').data
+    if existing:
+        return existing[0].id
+    return stripe.Customer.create(name=name, email=email).id
 
 
 def create_and_send_invoice(
