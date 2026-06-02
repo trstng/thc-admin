@@ -4,7 +4,7 @@ from datetime import date, datetime, timedelta
 
 import pytz
 
-from services.airtable import TABLES, get_records
+from services.airtable import TABLES, get_records, get_record
 from services.automation_log import log as alog
 from services.sendgrid import send_email
 from services.twilio_sms import send_sms, build_sms
@@ -37,7 +37,7 @@ async def run_reminder_job() -> None:
     try:
         jobs = await get_records(
             TABLES["JOBS"],
-            filter_formula=f"AND({{Job Date}}='{tomorrow}',{{Job Status}}='Scheduled')",
+            filter_formula=f"AND(DATETIME_FORMAT({{Job Date}},'YYYY-MM-DD')='{tomorrow}',{{Job Status}}='Scheduled')",
         )
     except Exception:
         logger.exception("reminders: failed to fetch jobs")
@@ -53,7 +53,7 @@ async def run_reminder_job() -> None:
         try:
             existing = await get_records(
                 TABLES["AUTOMATIONS_LOG"],
-                filter_formula=f"AND({{Job ID}}='{job_id}',{{Automation Type}}='Appointment Reminder')",
+                filter_formula=f"AND({{Job ID}}={job_id},{{Automation Type}}='Appointment Reminder')",
             )
             if existing:
                 logger.info("reminders: already sent for job %s — skipping", job_id)
@@ -63,8 +63,15 @@ async def run_reminder_job() -> None:
             continue
 
         linked_clients = f.get("Linked Client", [])
-        client_name = linked_clients[0].get("name", "") if linked_clients else ""
-        client_record_id = linked_clients[0].get("id") if linked_clients else None
+        client_record_id = linked_clients[0] if linked_clients else None
+
+        client_name = ""
+        if client_record_id:
+            try:
+                client_rec = await get_record(TABLES["CLIENTS"], client_record_id)
+                client_name = client_rec.get("fields", {}).get("Full Name", "")
+            except Exception:
+                logger.warning("reminders: could not fetch client name for %s", client_record_id)
 
         client_email = _lookup(f.get("Client Email"))
         client_phone = f.get("Client Phone", "")
