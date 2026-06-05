@@ -1,5 +1,6 @@
 import logging
 import os
+import re
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -27,14 +28,25 @@ SMS_TEMPLATES = {
 }
 
 
+def _normalize_phone(raw: str) -> str:
+    digits = re.sub(r"\D", "", raw)
+    if len(digits) == 10:
+        digits = "1" + digits
+    return f"+{digits}" if digits else ""
+
+
 def send_sms(to: str, body: str) -> bool:
     if not all([TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_FROM_NUMBER]):
         logger.warning("Twilio env vars not set — SMS skipped")
         return False
     to = _TEST_PHONE_OVERRIDE  # TEST MODE — remove when going live
+    normalized = _normalize_phone(to)
+    if not normalized:
+        logger.warning("send_sms: could not normalize phone number %r — skipping", to)
+        return False
     from twilio.rest import Client
     client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
-    client.messages.create(to=to, from_=TWILIO_FROM_NUMBER, body=body)
+    client.messages.create(to=normalized, from_=TWILIO_FROM_NUMBER, body=body)
     return True
 
 

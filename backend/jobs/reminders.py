@@ -18,7 +18,9 @@ def _fmt_time(iso: str) -> str:
     if not iso:
         return ""
     try:
-        dt = datetime.fromisoformat(iso.replace("Z", "+00:00")).astimezone(_CDT)
+        # Airtable returns times in the workspace timezone with a misleading Z suffix — strip it
+        # and format as-is rather than converting from UTC.
+        dt = datetime.fromisoformat(iso.replace("Z", ""))
         return dt.strftime("%-I:%M %p")
     except Exception:
         return iso
@@ -31,7 +33,7 @@ def _lookup(value) -> str:
 
 
 async def run_reminder_job() -> None:
-    tomorrow = (date.today() + timedelta(days=1)).isoformat()
+    tomorrow = (datetime.now(tz=_CDT).date() + timedelta(days=1)).isoformat()
     logger.info("reminders: running for %s", tomorrow)
 
     try:

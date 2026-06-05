@@ -1,8 +1,12 @@
 import asyncio
 import logging
-from datetime import date, timedelta
+from datetime import datetime, timedelta
 
-from services.airtable import TABLES, get_records, get_record
+import pytz
+
+_CDT = pytz.timezone("America/Chicago")
+
+from services.airtable import TABLES, get_records, get_record, update_record
 from services.automation_log import log as alog
 from services.sendgrid import send_email
 from services.twilio_sms import send_sms, build_sms
@@ -17,7 +21,7 @@ def _lookup(value) -> str:
 
 
 async def run_post_job_followup() -> None:
-    yesterday = (date.today() - timedelta(days=1)).isoformat()
+    yesterday = (datetime.now(tz=_CDT).date() - timedelta(days=1)).isoformat()
     logger.info("post_job: running for %s (yesterday's completed jobs)", yesterday)
 
     try:
@@ -52,10 +56,13 @@ async def run_post_job_followup() -> None:
         client_record_id = linked_clients[0] if linked_clients else None
 
         client_name = ""
+        review_already_sent = False
         if client_record_id:
             try:
                 client_rec = await get_record(TABLES["CLIENTS"], client_record_id)
-                client_name = client_rec.get("fields", {}).get("Full Name", "")
+                client_fields = client_rec.get("fields", {})
+                client_name = client_fields.get("Full Name", "")
+                review_already_sent = bool(client_fields.get("Review Sent?", False))
             except Exception:
                 logger.warning("post_job: could not fetch client name for %s", client_record_id)
 
@@ -69,6 +76,9 @@ async def run_post_job_followup() -> None:
         else:
             for template in ("cleaning_complete", "review_request"):
                 automation_type = "Post-Job Follow-Up" if template == "cleaning_complete" else "Review Request"
+                if template == "review_request" and review_already_sent:
+                    logger.info("post_job: review already sent for client %s — skipping", client_name)
+                    continue
                 try:
                     send_email(
                         to=client_email,
@@ -84,6 +94,8 @@ async def run_post_job_followup() -> None:
                         client_record_id=client_record_id,
                         job_record_id=job_record_id,
                     )
+                    if template == "review_request" and client_record_id:
+                        await update_record(TABLES["CLIENTS"], client_record_id, {"Review Sent?": True})
                 except Exception as exc:
                     logger.exception("post_job: email failed for job %s template %s", job_id, template)
                     await alog(
@@ -97,7 +109,7 @@ async def run_post_job_followup() -> None:
                         note=str(exc),
                     )
 
-        if client_phone:
+        if client_phone and not review_already_sent:
             body = build_sms("review", client_name)
             sent = send_sms(client_phone, body)
             if sent:
