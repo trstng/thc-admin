@@ -78,7 +78,7 @@ export async function getRecords<T = Record<string, unknown>>(
     const qs = new URLSearchParams(params);
     if (offset) qs.set("offset", offset);
     const url = `${BASE_URL}/${AIRTABLE_BASE_ID}/${tableId}?${qs.toString()}`;
-    const res = await fetchWithRetry(url, { headers: headers(), cache: "no-store" });
+    const res = await fetchWithRetry(url, { headers: headers(), next: { revalidate: 30 } });
     if (!res.ok) {
       const txt = await res.text();
       throw new Error(`Airtable list ${tableId} failed: ${res.status} ${txt}`);
@@ -97,7 +97,7 @@ export async function getRecord<T = Record<string, unknown>>(
   recordId: string
 ): Promise<AirtableRecord<T>> {
   const url = `${BASE_URL}/${AIRTABLE_BASE_ID}/${tableId}/${recordId}`;
-  const res = await fetchWithRetry(url, { headers: headers(), cache: "no-store" });
+  const res = await fetchWithRetry(url, { headers: headers(), next: { revalidate: 30 } });
   if (!res.ok) {
     const txt = await res.text();
     throw new Error(`Airtable get ${tableId}/${recordId} failed: ${res.status} ${txt}`);

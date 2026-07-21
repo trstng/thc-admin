@@ -1,10 +1,7 @@
 fastapi>=0.115
 uvicorn[standard]>=0.34
-apscheduler>=3.11
 httpx>=0.28
 sendgrid>=6.11
 twilio>=9.6
-stripe>=11.4
 python-dotenv>=1.1
 pydantic>=2.11
-pytz>=2025.1

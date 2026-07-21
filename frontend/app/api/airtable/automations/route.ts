@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getRecords, TABLES, type AutomationLogFields } from "@/lib/airtable";
 
-export const revalidate = 0;
+export const revalidate = 30;
 
 export async function GET() {
   try {
